@@ -14,7 +14,7 @@
 .type nameStr,%gnu_unique_object
     
 /*** STUDENTS: Change the next line to your name!  **/
-nameStr: .asciz "Inigo Montoya"  
+nameStr: .asciz "Edward Guerra Ramirez"  
  
 .align    /* ensure following vars are allocated on word-aligned addresses */
 
@@ -73,6 +73,24 @@ asmFunc:
     
     /*** STUDENTS: Place your code BELOW this line!!! **************/
 
+/* Extract the 16-bit a_value (upper 16 bits) */
+    LSR r1, r0, #16      /* Shift right by 16 to get the upper half */
+    MOV r2, r1           /* Copy to another register */
+    TST r1, #0x8000      /* Test sign bit */
+    BEQ store_a          /* If positive, store directly */
+    LDR r3, =0xFFFF0000  /* Load sign extension mask into r3 */
+    ORR r2, r2, r3       /* Sign extend if negative */
+store_a:
+    LDR r3, =a_value    /* Load address of a_value */
+    STR r2, [r3]        /* Store extracted value */
+
+    /* Extract the 16-bit b_value (lower 16 bits) */
+    MOV r1, r0          /* Copy input value */
+    MOV r2, r1, LSL #16 /* Left shift to move sign bit to MSB */
+    ASR r2, r2, #16     /* Arithmetic shift right to sign extend */
+    LDR r3, =b_value    /* Load address of b_value */
+    STR r2, [r3]        /* Store extracted value */
+   
     
     /*** STUDENTS: Place your code ABOVE this line!!! **************/
 
